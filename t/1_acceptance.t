@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 use Test2::Bundle::Extended;
-use Test2::Tools::Compare      qw( array event call T F );
-use Test2::API                 qw( intercept            );
+use Test2::Tools::Compare      qw( all_items array call etc event object T F );
+use Test2::API                 qw( intercept );
 
 # We'll run these tests and then examine the resulting event stream.
 # Inserted some sleeps between tests to make sure we don't get
@@ -66,6 +66,7 @@ is(
 #
 require Test2::Plugin::TodoFailOnSuccess;
 Test2::Plugin::TodoFailOnSuccess->import;
+
 is(
     intercept( sub { $tests_to_run->() } ),
     array {
@@ -87,7 +88,14 @@ is(
             call effective_pass => T();
         };
         event Fail => sub {
-            call name => 'TODO passed unexpectedly: Passing TODO test # TODO Inside TODO';
+            call name => 'TODO passed unexpectedly: Passing TODO test';
+            call amnesty => array {
+                all_items object {
+                    call details => 'Inside TODO';
+                    call tag     => 'TODO';
+                };
+                etc();
+            };
         };
         event Ok => sub {
             call name           => 'Another expected pass';

@@ -114,7 +114,7 @@ sub on_context_init
 
             foreach my $todo_reason (sort keys %todo_reasons) {
                 $ctx->fail(
-                    qq{TODO passed unexpectedly: $details # TODO $todo_reason}
+                    qq{TODO passed unexpectedly: $details}
                 );
             }
         },
