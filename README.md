@@ -41,16 +41,32 @@ version 0.0.1
 
 # DESCRIPTION
 
-Provides a mechanism to report test failures when TODO tests unexpectedly pass.
+Wrapping a test with TODO is a conventient way to avoid being tripped
+up by test failures until you have a chance to get the code working.
+It normally won't hurt to leave the TODO in place after the tests
+start passing, but if you forget to remove the TODO at that point,
+a subsequent code change could start causing new test failures which
+would then go unreported and possibly unnoticed.
 
-If a TODO test passes, a failure will be reported with a message containing
-both the test description and the TODO reason, equivalent to doing:
+This module provides a mechanism to trigger explicit test failures
+when TODO tests unexpectedly pass, so that you have an opportunity
+to remove the TODO.
 
-    fail "TODO passed unexpectedly: $test_description # $todo_reason";
+If a TODO test passes, a failure will be reported with a message
+containing the test description, equivalent to doing:
 
-For example:
+    fail "TODO passed unexpectedly: $test_description";
 
-    TODO passed unexpectedly: Got expected value # TODO Not expected to pass
+which might appear in your TAP output along with the TODO reason as
+something like:
+
+    not ok 3 - TODO passed unexpectedly: Got expected value # TODO Not expected to pass
+
+Note that due to the additional `fail` being reported, you may
+see messages about your planned number of tests being exceeded,
+for example:
+
+    # Did not follow plan: expected 5, ran 6.
 
 There are no options or arguments, just `use Test2::Plugin::TodoFailOnSuccess`
 in your test file.
